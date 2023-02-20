@@ -2,9 +2,12 @@ const express = require('express')
 const app = express();
 const morgan = require('morgan')
 const cors = require('cors')
+const mongoose = require('mongoose')
+const Contact = require('./models/contact')
 const unknownEndpoint = require('./middlewares/unknownHandler')
 const customMorganMiddleware = require('./middlewares/morgancustom')
 const PORT = 3001;
+
 
 //mock data-----------------------------------------------------
 let persons = [
@@ -41,7 +44,10 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 
 app.get('/api/persons',(req,res)=>{
-    res.json(persons)
+    Contact.find({}).then(result=>{
+        res.json(result)
+        mongoose.connection.close()
+    })
 })
 
 app.get('/info',(req,res)=>{
